@@ -11,7 +11,7 @@ public class Start {
 			if(input.exists()) {
 				parser = new InputFileParser(input);
 			}else {
-				System.err.println(args[0]+" doesnt exist");
+				System.err.println(args[0]+" doesn't exist");
 			}
 		}
 	}
