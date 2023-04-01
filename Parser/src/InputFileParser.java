@@ -39,7 +39,7 @@ public class InputFileParser {
 			
 			if(found) {
 				System.out.println("Found end of header file at index #"+currentIndex);
-				File parsedDataFile = new File(input.getAbsolutePath()+"_parsed");
+				File parsedDataFile = new File(input.getAbsolutePath()+"-parsed");
 				FileOutputStream parsedData = new FileOutputStream(parsedDataFile);
 				
 				byte[] charBuffer = new byte[528];	//528 bytes is the length of each block of data
