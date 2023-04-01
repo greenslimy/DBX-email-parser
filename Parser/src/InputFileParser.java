@@ -1,9 +1,4 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.math.BigInteger;
+import java.io.*;
 import java.util.Arrays;
 
 public class InputFileParser {
@@ -48,10 +43,10 @@ public class InputFileParser {
 				FileOutputStream parsedData = new FileOutputStream(parsedDataFile);
 				
 				byte[] charBuffer = new byte[528];	//528 bytes is the length of each block of data
-				for(int read=fileData.read(charBuffer);read != -1;) {	//While # of bytes read is not -1
+				while((lastRead = fileData.read(charBuffer)) != -1) {	//While # of bytes read is not -1
 					String bodyHeaderData = new String(charBuffer).substring(0, 512);
-					//parsedData.write(bodyHeaderData.getBytes());
-					//parsedData.flush();
+					parsedData.write(bodyHeaderData.getBytes());
+					parsedData.flush();
 				}
 				
 				System.out.println("Reached the end of the file");
