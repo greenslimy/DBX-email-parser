@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Arrays;
 
 public class InputFileParser {
@@ -16,28 +17,36 @@ public class InputFileParser {
 	
 	public InputFileParser(File input) {
 		try {
+			File headerOutputFile = new File(input.getAbsolutePath()+"_header");
+			FileOutputStream headerData = new FileOutputStream(headerOutputFile);
 			fileData = new FileInputStream(input);
+			boolean found = false;
 			byte[] lastSixteen = new byte[16];
+			
 			int currentIndex = 0;
-			boolean error = false;
-			while(!Arrays.equals(lastSixteen, MAGIC)) {
-				int lastRead = fileData.read();
-				lastSixteen[currentIndex%16] = (byte) lastRead;
-				currentIndex++;
+			int lastRead = -1;
+			while((lastRead = fileData.read()) != -1) {
+				headerData.write(lastRead);
+				headerData.flush();
 				
-				if(lastRead == -1) {
-					error = true;
+				for(int i=16;i>1;i--) {
+					lastSixteen[16-i] = lastSixteen[16-(i-1)];
+				}
+				lastSixteen[15] = (byte) lastRead;
+				currentIndex++;
+
+				if(Arrays.equals(lastSixteen, MAGIC)) {
+					found = true;
 					break;
 				}
 			}
+			headerData.close();
 			
-			if(!error) {
-				//System.out.println("YIPEE "+new String(MAGIC));
-				System.out.println("Found end of header file at index #"+currentIndex+" - "+new String(lastSixteen));
+			if(found) {
+				System.out.println("Found end of header file at index #"+currentIndex);
 				File parsedDataFile = new File(input.getAbsolutePath()+"_parsed");
 				FileOutputStream parsedData = new FileOutputStream(parsedDataFile);
 				
-				//int chunk = 0;
 				byte[] charBuffer = new byte[528];	//528 bytes is the length of each block of data
 				for(int read=fileData.read(charBuffer);read != -1;) {	//While # of bytes read is not -1
 					String bodyHeaderData = new String(charBuffer).substring(0, 512);
