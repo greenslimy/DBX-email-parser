@@ -84,6 +84,11 @@ public class InputFileParser {
 						if (block_expectedHeaderId == BLOCK_HEADER_END_MAGIC) {
 							block_expectedHeaderId = block_currentHeaderId+528;
 							System.out.println("Wrote email data file (email_"+emailIndex+") with length " + totalFileSize);
+
+							//Begin parsing readable email header data
+							JSONHelpers json = new JSONHelpers();
+							json.separateEmailHeader(emailFile.toString(), this.currentDirectory + "/" + this.fileName + " metadata");
+
 							//beginNewEmail = true;
 							emailIndex++;
 							dataOutput.close();    //Close the current file's data stream before beginning the new one
@@ -109,6 +114,14 @@ public class InputFileParser {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public String getCurrentDirectory() {
+		return currentDirectory;
+	}
+
+	public String getFileName() {
+		return fileName;
 	}
 
 }
